@@ -1,24 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import ModuleBtn from './components/ModuleBtn';
+import PostList from './components/PostList';
+import { useAppDispatch, useAppSelector } from './store/hooks/redux';
+import { newFetchUsers } from './store/slices/userSlice/asyncActions';
 
 function App() {
+  const { users, isLoading, error } = useAppSelector(state => state.userReducer);
+  const dispatch = useAppDispatch();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ModuleBtn fetchUsers={() => dispatch(newFetchUsers())}>
+        Запросить данные о пользователях
+      </ModuleBtn>
+      {isLoading && "Идет загрузка пользователей..."}
+      {error && <h1>{error}</h1>}
+      {users.length > 0 && JSON.stringify(users, null, 2)}
+      <PostList />
     </div>
   );
 }
